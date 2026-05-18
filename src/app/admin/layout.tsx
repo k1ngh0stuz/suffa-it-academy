@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BookOpen, LayoutDashboard, CreditCard, LogOut } from "lucide-react";
+import { BookOpen, LayoutDashboard, CreditCard, LogOut, ArrowLeft } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/actions/auth";
 
@@ -36,6 +36,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         <nav className="flex-1 p-4">
           <ul className="space-y-1">
+            <li>
+              <Link
+                href="/dashboard"
+                className="mb-2 flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-500 transition-colors hover:bg-white/5 hover:text-brand-cyan"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Выйти из админки
+              </Link>
+            </li>
+            <li>
+              <div className="my-1 border-t border-white/5" />
+            </li>
             {navItems.map(({ href, label, icon: Icon }) => (
               <li key={href}>
                 <Link

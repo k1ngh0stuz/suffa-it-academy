@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, LayoutDashboard, User, LogOut } from "lucide-react";
+import { BookOpen, LayoutDashboard, User, LogOut, ArrowLeft } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/actions/auth";
 
@@ -18,12 +18,16 @@ export default async function ProtectedLayout({ children }: { children: React.Re
     <div className="flex min-h-screen">
       {/* Sidebar */}
       <aside className="border-white/8 fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-surface-raised">
-        <div className="border-white/8 flex items-center gap-2 border-b px-4 py-5">
+        <Link
+          href="/"
+          className="border-white/8 group flex items-center gap-2 border-b px-4 py-5 transition-opacity hover:opacity-80"
+        >
           <BookOpen className="h-6 w-6 text-brand-cyan" />
           <span className="font-bold text-slate-100">
             Suffa<span className="text-brand-cyan"> IT</span>
           </span>
-        </div>
+          <ArrowLeft className="ml-auto h-3.5 w-3.5 text-slate-600 opacity-0 transition-opacity group-hover:opacity-100" />
+        </Link>
 
         <nav className="flex-1 p-4">
           <ul className="space-y-1">
