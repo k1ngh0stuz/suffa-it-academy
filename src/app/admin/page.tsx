@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { CourseStatusToggle } from "@/components/admin/course-status-toggle";
+import { CoursePriceForm } from "@/components/admin/course-price-form";
+import { AddCourseForm } from "@/components/admin/add-course-form";
 import { ManualGrantForm } from "@/components/admin/manual-grant-form";
 import { EnrollmentList } from "@/components/admin/enrollment-list";
 import { ManualGrantLog } from "@/components/admin/manual-grant-log";
@@ -47,12 +49,21 @@ export default async function AdminPage() {
         </p>
       </div>
 
+      {/* Add new course */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold text-slate-100">Добавить новый курс</h2>
+        <AddCourseForm />
+      </section>
+
       {/* Course status */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-slate-100">Курсы — статусы</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(courses as unknown as Course[])?.map((course) => (
-            <CourseStatusToggle key={course.id} course={course} />
+            <div key={course.id}>
+              <CourseStatusToggle course={course} />
+              <CoursePriceForm course={course} />
+            </div>
           ))}
         </div>
       </section>

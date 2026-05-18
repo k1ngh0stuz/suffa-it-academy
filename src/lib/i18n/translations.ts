@@ -97,6 +97,45 @@ export const translations = {
       dashboard: "Личный кабинет",
       rights: "© 2025 Suffa IT Academy. Все права защищены.",
     },
+    dashboard: {
+      myCourses: "Мои курсы",
+      profile: "Профиль",
+      adminPanel: "Администрирование",
+      signOut: "Выйти",
+      noCourses: "У вас ещё нет купленных курсов",
+      browseCourses: "Смотреть курсы",
+    },
+    profilePage: {
+      title: "Профиль",
+      name: "Имя",
+      email: "Email",
+      phone: "Телефон",
+      role: "Роль",
+      createdAt: "Аккаунт создан",
+      editTitle: "Редактировать профиль",
+      avatar: "Фото профиля",
+      uploadPhoto: "Загрузить фото",
+      save: "Сохранить",
+      saving: "Сохранение...",
+    },
+    adminPage: {
+      title: "Панель администратора",
+      activeStudents: "Активных учеников",
+      coursesSection: "Курсы — статусы",
+      addCourse: "Добавить новый курс",
+      manualGrant: "Ручная выдача доступа",
+      enrollments: "Все записи (последние 50)",
+      grantsLog: "Журнал ручных выдач",
+      backToDashboard: "Выйти из админки",
+      payments: "Платежи",
+      courseTitle: "Название",
+      courseSlug: "Slug",
+      courseDesc: "Описание",
+      coursePrice: "Цена (UZS)",
+      create: "Создать курс",
+      priceLabel: "Цена",
+      savePrice: "Сохранить цену",
+    },
   },
 
   uz: {
@@ -196,6 +235,45 @@ export const translations = {
       dashboard: "Shaxsiy kabinet",
       rights: "© 2025 Suffa IT Academy. Barcha huquqlar himoyalangan.",
     },
+    dashboard: {
+      myCourses: "Mening kurslarim",
+      profile: "Profil",
+      adminPanel: "Boshqaruv paneli",
+      signOut: "Chiqish",
+      noCourses: "Sizda hali sotib olingan kurslar yo'q",
+      browseCourses: "Kurslarni ko'rish",
+    },
+    profilePage: {
+      title: "Profil",
+      name: "Ism",
+      email: "Email",
+      phone: "Telefon",
+      role: "Rol",
+      createdAt: "Hisob yaratilgan",
+      editTitle: "Profilni tahrirlash",
+      avatar: "Profil rasmi",
+      uploadPhoto: "Rasm yuklash",
+      save: "Saqlash",
+      saving: "Saqlanmoqda...",
+    },
+    adminPage: {
+      title: "Administrator paneli",
+      activeStudents: "Faol o'quvchilar",
+      coursesSection: "Kurslar — holati",
+      addCourse: "Yangi kurs qo'shish",
+      manualGrant: "Qo'lda kirish berish",
+      enrollments: "Barcha yozuvlar (oxirgi 50)",
+      grantsLog: "Qo'lda berishlar jurnali",
+      backToDashboard: "Admin paneldan chiqish",
+      payments: "To'lovlar",
+      courseTitle: "Nomi",
+      courseSlug: "Slug",
+      courseDesc: "Tavsif",
+      coursePrice: "Narx (UZS)",
+      create: "Kurs yaratish",
+      priceLabel: "Narx",
+      savePrice: "Narxni saqlash",
+    },
   },
 } as const;
 
@@ -268,4 +346,43 @@ export type Translations = {
     addressText: string;
   };
   footer: { tagline: string; nav: string; contacts: string; dashboard: string; rights: string };
+  dashboard: {
+    myCourses: string;
+    profile: string;
+    adminPanel: string;
+    signOut: string;
+    noCourses: string;
+    browseCourses: string;
+  };
+  profilePage: {
+    title: string;
+    name: string;
+    email: string;
+    phone: string;
+    role: string;
+    createdAt: string;
+    editTitle: string;
+    avatar: string;
+    uploadPhoto: string;
+    save: string;
+    saving: string;
+  };
+  adminPage: {
+    title: string;
+    activeStudents: string;
+    coursesSection: string;
+    addCourse: string;
+    manualGrant: string;
+    enrollments: string;
+    grantsLog: string;
+    backToDashboard: string;
+    payments: string;
+    courseTitle: string;
+    courseSlug: string;
+    courseDesc: string;
+    coursePrice: string;
+    create: string;
+    priceLabel: string;
+    savePrice: string;
+  };
 };

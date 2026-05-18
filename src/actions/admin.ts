@@ -86,6 +86,57 @@ export async function revokeEnrollmentAction(enrollmentId: string): Promise<Acti
   }
 }
 
+export async function updateCoursePriceAction(
+  courseId: string,
+  priceTiyin: number | null,
+): Promise<ActionResult> {
+  try {
+    const { supabase } = await requireAdmin();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase.from("courses") as any)
+      .update({ price_tiyin: priceTiyin, updated_at: new Date().toISOString() })
+      .eq("id", courseId);
+    if (error) return { error: error.message };
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: "Цена обновлена" };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ошибка" };
+  }
+}
+
+export async function createCourseAction(
+  _prev: unknown,
+  formData: FormData,
+): Promise<ActionResult> {
+  const title = (formData.get("title") as string)?.trim();
+  const slug = (formData.get("slug") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim() || null;
+  const priceStr = formData.get("price_uzs") as string;
+  const price_tiyin = priceStr ? Math.round(parseFloat(priceStr) * 100) : null;
+
+  if (!title || !slug) return { error: "Название и slug обязательны" };
+
+  try {
+    const { supabase } = await requireAdmin();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase.from("courses") as any).insert({
+      title,
+      slug,
+      description,
+      price_tiyin,
+      status: "coming_soon",
+      sort_order: 99,
+    });
+    if (error) return { error: error.message };
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: `Курс "${title}" создан` };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ошибка" };
+  }
+}
+
 export async function searchStudentAction(
   _prev: unknown,
   formData: FormData,

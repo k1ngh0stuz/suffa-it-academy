@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { ProfileEditForm } from "@/components/profile/profile-edit-form";
 import type { Profile } from "@/types";
 
 export const metadata: Metadata = { title: "Профиль" };
@@ -44,6 +45,13 @@ export default async function ProfilePage() {
           </p>
         </div>
       </div>
+
+      <ProfileEditForm
+        initialName={p?.full_name ?? null}
+        initialPhone={p?.phone ?? null}
+        initialAvatarUrl={p?.avatar_url ?? null}
+        userId={user.id}
+      />
     </div>
   );
 }
