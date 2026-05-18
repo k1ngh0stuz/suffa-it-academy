@@ -55,7 +55,9 @@ export function CourseCard({ course }: CourseCardProps) {
         </div>
 
         <h3 className="mb-2 text-xl font-bold text-slate-100">{course.title}</h3>
-        <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-500">{course.description}</p>
+        <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-500">
+          {c.descriptions[course.slug] ?? course.description}
+        </p>
 
         <div className="flex items-center justify-between">
           {isAvailable ? (

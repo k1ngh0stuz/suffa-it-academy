@@ -51,6 +51,14 @@ export const translations = {
       inDevelopment: "В разработке",
       details: "Подробнее",
       contactUs: "Свяжитесь с нами",
+      descriptions: {
+        "network-engineer":
+          "Полный курс по сетевым технологиям: маршрутизация, коммутация, протоколы TCP/IP, настройка Cisco и Mikrotik. Практические лабораторные работы на реальном оборудовании.",
+        "windows-server-2022":
+          "Администрирование Windows Server 2022: Active Directory, DNS, DHCP, групповые политики, Hyper-V, PowerShell автоматизация.",
+        "ethical-hacker":
+          "Этичный хакинг и пентест: разведка, сканирование уязвимостей, эксплойты, Metasploit, Burp Suite, CEH/OSCP методология.",
+      },
     },
     // Why us
     whyUs: {
@@ -141,6 +149,14 @@ export const translations = {
       inDevelopment: "Ishlanmoqda",
       details: "Batafsil",
       contactUs: "Biz bilan bog'laning",
+      descriptions: {
+        "network-engineer":
+          "Tarmoq texnologiyalari bo'yicha to'liq kurs: marshrutlash, kommutatsiya, TCP/IP protokollari, Cisco va Mikrotik sozlash. Haqiqiy uskunalarda amaliy laboratoriya ishlari.",
+        "windows-server-2022":
+          "Windows Server 2022 administratsiyasi: Active Directory, DNS, DHCP, guruh siyosatlari, Hyper-V, PowerShell avtomatizatsiyasi.",
+        "ethical-hacker":
+          "Etik hacking va pentest: razvedka, zaifliklarni skanerlash, ekspluatlar, Metasploit, Burp Suite, CEH/OSCP metodologiyasi.",
+      },
     },
     // Why us
     whyUs: {
@@ -227,6 +243,7 @@ export type Translations = {
     inDevelopment: string;
     details: string;
     contactUs: string;
+    descriptions: Record<string, string>;
   };
   whyUs: {
     badge: string;
