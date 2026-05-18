@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, BookOpen, LogIn } from "lucide-react";
+import { Menu, X, BookOpen, LogIn, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/context";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const { lang, t, toggle } = useLanguage();
 
   useEffect(() => {
@@ -17,6 +20,21 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = getSupabaseBrowserClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
 
   const links = [
     { href: "#courses", label: t.nav.courses },
@@ -66,15 +84,36 @@ export function Navbar() {
             <span className={lang === "uz" ? "text-brand-cyan" : "text-slate-500"}>UZ</span>
           </button>
 
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">
-              <LogIn className="h-4 w-4" />
-              {t.nav.login}
-            </Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/register">{t.nav.register}</Link>
-          </Button>
+          {user ? (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/dashboard">
+                  <User className="h-4 w-4" />
+                  {user.email?.split("@")[0]}
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+                className="text-slate-400 hover:text-red-400"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/login">
+                  <LogIn className="h-4 w-4" />
+                  {t.nav.login}
+                </Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/register">{t.nav.register}</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -115,12 +154,37 @@ export function Navbar() {
             ))}
           </ul>
           <div className="flex flex-col gap-2">
-            <Button variant="secondary" size="sm" asChild>
-              <Link href="/login">{t.nav.login}</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/register">{t.nav.register}</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="secondary" size="sm" asChild>
+                  <Link href="/dashboard" onClick={() => setOpen(false)}>
+                    <User className="h-4 w-4" />
+                    {user.email?.split("@")[0]}
+                  </Link>
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setOpen(false);
+                    void handleSignOut();
+                  }}
+                  className="text-red-400"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {lang === "ru" ? "Выйти" : "Chiqish"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="secondary" size="sm" asChild>
+                  <Link href="/login">{t.nav.login}</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/register">{t.nav.register}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}
