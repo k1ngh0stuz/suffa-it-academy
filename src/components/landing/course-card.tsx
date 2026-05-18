@@ -1,8 +1,11 @@
+﻿"use client";
+
 import Link from "next/link";
 import { Clock, ArrowRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
+import { useLanguage } from "@/lib/i18n/context";
 import type { Course } from "@/types";
 
 const COURSE_ICONS: Record<string, string> = {
@@ -16,6 +19,8 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
+  const { t } = useLanguage();
+  const c = t.courses;
   const isAvailable = course.status === "available";
   const icon = COURSE_ICONS[course.slug] ?? "📚";
 
@@ -27,7 +32,6 @@ export function CourseCard({ course }: CourseCardProps) {
           : "border-white/5 opacity-80"
       }`}
     >
-      {/* Header gradient */}
       <div
         className={`flex h-44 items-center justify-center text-6xl ${
           isAvailable
@@ -38,15 +42,14 @@ export function CourseCard({ course }: CourseCardProps) {
         {icon}
       </div>
 
-      {/* Content */}
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-3 flex items-center justify-between">
           {isAvailable ? (
-            <Badge variant="cyan">Доступен</Badge>
+            <Badge variant="cyan">{c.available}</Badge>
           ) : (
             <Badge variant="gray">
               <Clock className="h-3 w-3" />
-              Скоро
+              {c.comingSoon}
             </Badge>
           )}
         </div>
@@ -58,24 +61,26 @@ export function CourseCard({ course }: CourseCardProps) {
           {isAvailable ? (
             <>
               <span className="text-sm font-semibold text-brand-cyan">
-                {formatPrice(course.price_tiyin)}
+                {formatPrice(course.price_tiyin) === "Свяжитесь с нами"
+                  ? c.contactUs
+                  : formatPrice(course.price_tiyin)}
               </span>
               <Button size="sm" asChild>
                 <Link href={`/courses/${course.slug}`}>
-                  Подробнее
+                  {c.details}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </>
           ) : (
             <>
-              <span className="text-sm text-slate-600">В разработке</span>
+              <span className="text-sm text-slate-600">{c.inDevelopment}</span>
               <button
                 disabled
                 className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-600"
               >
                 <Lock className="h-3.5 w-3.5" />
-                Скоро
+                {c.comingSoon}
               </button>
             </>
           )}

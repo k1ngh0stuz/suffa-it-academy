@@ -1,55 +1,31 @@
+﻿"use client";
+
 import { MapPin, Users, Award, Cpu } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export function AboutSection() {
+  const { t } = useLanguage();
+  const a = t.about;
+
   const features = [
-    {
-      icon: Cpu,
-      title: "Практические лаборатории",
-      description: "Обучение на реальном оборудовании Cisco, Mikrotik и серверных системах.",
-    },
-    {
-      icon: Users,
-      title: "Эксперты-практики",
-      description: "Преподаватели — действующие специалисты с многолетним опытом в индустрии.",
-    },
-    {
-      icon: Award,
-      title: "Сертификация",
-      description: "Подготовка к международным сертификатам CCNA, CEH, CompTIA и другим.",
-    },
-    {
-      icon: MapPin,
-      title: "Удобное расположение",
-      description:
-        "Академия находится в Ибрат Янгикургане, Бувайдинский район, Ферганская область.",
-    },
+    { icon: Cpu, title: a.f1Title, description: a.f1Desc },
+    { icon: Users, title: a.f2Title, description: a.f2Desc },
+    { icon: Award, title: a.f3Title, description: a.f3Desc },
+    { icon: MapPin, title: a.f4Title, description: a.f4Desc },
   ];
 
   return (
     <section id="about" className="section-padding bg-surface-DEFAULT/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          {/* Text */}
           <div>
             <div className="mb-3 inline-block rounded-full border border-brand-indigo/30 bg-brand-indigo/10 px-3 py-1 text-sm text-brand-indigo">
-              О академии
+              {a.badge}
             </div>
-            <h2 className="mb-5 text-4xl font-bold text-slate-100">
-              Suffa IT Academy — ваш старт в мире IT
-            </h2>
-            <p className="mb-5 text-slate-400">
-              Мы — образовательный центр, основанный с целью дать качественное IT-образование
-              студентам Ферганской области. Наша миссия — сделать профессиональное IT-обучение
-              доступным без поездки в крупные города.
-            </p>
-            <p className="text-slate-400">
-              Каждый курс построен по принципу «практика прежде теории»: вы сразу работаете с
-              реальными инструментами, конфигурируете оборудование и решаете задачи, с которыми
-              сталкиваются специалисты на рынке труда.
-            </p>
+            <h2 className="mb-5 text-4xl font-bold text-slate-100">{a.title}</h2>
+            <p className="mb-5 text-slate-400">{a.p1}</p>
+            <p className="text-slate-400">{a.p2}</p>
           </div>
-
-          {/* Feature grid */}
           <div className="grid grid-cols-2 gap-4">
             {features.map(({ icon: Icon, title, description }) => (
               <div

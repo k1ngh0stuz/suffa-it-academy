@@ -1,6 +1,8 @@
-import { Phone, Send, MapPin } from "lucide-react";
+﻿"use client";
 
-// Simple Instagram SVG (lucide-react v1.x removed it)
+import { Phone, Send, MapPin } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
+
 function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -21,18 +23,20 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export function LocationSection() {
+  const { t } = useLanguage();
+  const l = t.location;
+
   return (
     <section id="location" className="section-padding">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <div className="mb-3 inline-block rounded-full border border-brand-cyan/30 bg-brand-cyan/10 px-3 py-1 text-sm text-brand-cyan">
-            Как нас найти
+            {l.badge}
           </div>
-          <h2 className="mb-4 text-4xl font-bold text-slate-100">Локация и контакты</h2>
+          <h2 className="mb-4 text-4xl font-bold text-slate-100">{l.title}</h2>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-5">
-          {/* Map — 3 columns */}
           <div className="border-white/8 overflow-hidden rounded-2xl border lg:col-span-3">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d71.14107910119486!3d40.56007033543007!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDAuNTYwMDcsMDcxLjE0MTA3!5e0!3m2!1sru!2suz!4v1700000000000!5m2!1sru!2suz"
@@ -47,16 +51,11 @@ export function LocationSection() {
             />
           </div>
 
-          {/* Contact block — 2 columns */}
           <div className="flex flex-col justify-center gap-6 lg:col-span-2">
             <div>
-              <h3 className="mb-4 text-xl font-bold text-slate-100">Свяжитесь с нами</h3>
-              <p className="mb-6 text-sm text-slate-400">
-                Хотите записаться на курс или узнать цену? Напишите нам в Telegram или позвоните —
-                ответим в течение нескольких минут.
-              </p>
+              <h3 className="mb-4 text-xl font-bold text-slate-100">{l.contactTitle}</h3>
+              <p className="mb-6 text-sm text-slate-400">{l.contactDesc}</p>
             </div>
-
             <div className="space-y-4">
               <a
                 href="tel:+998501556700"
@@ -66,7 +65,7 @@ export function LocationSection() {
                   <Phone className="h-5 w-5 text-brand-cyan" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-500">Телефон</div>
+                  <div className="text-xs text-slate-500">{l.phone}</div>
                   <div className="font-semibold text-slate-100 transition-colors group-hover:text-brand-cyan">
                     +998 50 155 67 00
                   </div>
@@ -112,12 +111,8 @@ export function LocationSection() {
                   <MapPin className="h-5 w-5 text-brand-indigo" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-500">Адрес</div>
-                  <div className="text-sm text-slate-300">
-                    Ибрат Янгикурган, Бувайдинский район,
-                    <br />
-                    Ферганская область, Узбекистан
-                  </div>
+                  <div className="text-xs text-slate-500">{l.address}</div>
+                  <div className="whitespace-pre-line text-sm text-slate-300">{l.addressText}</div>
                 </div>
               </div>
             </div>

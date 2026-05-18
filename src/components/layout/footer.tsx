@@ -1,12 +1,18 @@
+﻿"use client";
+
 import Link from "next/link";
 import { Phone, BookOpen } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export function Footer() {
+  const { t } = useLanguage();
+  const f = t.footer;
+  const n = t.nav;
+
   return (
     <footer className="border-white/8 bg-surface-DEFAULT border-t">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
-          {/* Brand */}
           <div>
             <Link href="/" className="mb-4 flex items-center gap-2">
               <BookOpen className="h-6 w-6 text-brand-cyan" />
@@ -14,23 +20,20 @@ export function Footer() {
                 Suffa<span className="text-brand-cyan"> IT</span> Academy
               </span>
             </Link>
-            <p className="text-sm text-slate-500">
-              Профессиональное IT-образование в сердце Ферганской долины.
-            </p>
+            <p className="text-sm text-slate-500">{f.tagline}</p>
           </div>
 
-          {/* Links */}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-400">
-              Навигация
+              {f.nav}
             </h3>
             <ul className="space-y-2 text-sm text-slate-500">
               {[
-                { href: "#courses", label: "Курсы" },
-                { href: "#about", label: "О нас" },
-                { href: "#why-us", label: "Почему мы" },
-                { href: "#location", label: "Контакты" },
-                { href: "/dashboard", label: "Личный кабинет" },
+                { href: "#courses", label: n.courses },
+                { href: "#about", label: n.about },
+                { href: "#why-us", label: n.whyUs },
+                { href: "#location", label: n.contacts },
+                { href: "/dashboard", label: f.dashboard },
               ].map((l) => (
                 <li key={l.href}>
                   <a href={l.href} className="transition-colors hover:text-brand-cyan">
@@ -41,10 +44,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contacts */}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-400">
-              Контакты
+              {f.contacts}
             </h3>
             <ul className="space-y-2 text-sm text-slate-500">
               <li className="flex items-center gap-2">
@@ -73,17 +75,13 @@ export function Footer() {
                   Instagram: @suffaitacademy
                 </a>
               </li>
-              <li className="text-slate-600">
-                Ибрат Янгикурган, Бувайдинский район,
-                <br />
-                Ферганская область, Узбекистан
-              </li>
+              <li className="whitespace-pre-line text-slate-600">{t.location.addressText}</li>
             </ul>
           </div>
         </div>
 
         <div className="border-white/8 mt-10 border-t pt-6 text-center text-xs text-slate-600">
-          © 2025 Suffa IT Academy. Все права защищены.
+          {f.rights}
         </div>
       </div>
     </footer>
