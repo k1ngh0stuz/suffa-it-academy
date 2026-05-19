@@ -52,32 +52,35 @@ export function generateSignedEmbedUrl(videoId: string): string {
   const libraryId = LIBRARY_ID();
   const tokenAuthKey = TOKEN_AUTH_KEY();
 
+  const baseUrl = `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}`;
+
   if (!tokenAuthKey) {
-    console.warn(
-      "[Bunny] BUNNY_TOKEN_AUTH_KEY not set — returning unsigned URL (will 403 if Token Auth is enabled in library)",
-    );
-    return `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?autoplay=false&preload=true`;
+    console.warn("[Bunny] BUNNY_TOKEN_AUTH_KEY not set — returning unsigned URL");
+    return `${baseUrl}?autoplay=false&preload=true`;
   }
 
   const expires = Math.floor(Date.now() / 1000) + 2 * 60 * 60; // 2 hours
 
-  // Bunny token: SHA256(key + videoId + expires), Base64Url encoded
-  // Must use raw bytes (Buffer.from) to match PHP's hash('sha256', ..., true)
-  const hashInput = Buffer.from(tokenAuthKey + videoId + String(expires), "utf8");
-  const token = crypto
+  // Bunny token: SHA256(key + videoId + expires) → Base64Url
+  // Variant A: standard (key + videoId + expires)
+  const rawA = tokenAuthKey + videoId + String(expires);
+  const tokenA = crypto
     .createHash("sha256")
-    .update(hashInput)
+    .update(rawA)
     .digest("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=/g, "");
 
-  const url = `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?token=${token}&expires=${expires}&autoplay=false&preload=true`;
+  const url = `${baseUrl}?token=${tokenA}&expires=${expires}&autoplay=false&preload=true`;
+
+  console.log("[Bunny] videoId:", videoId);
+  console.log("[Bunny] libraryId:", libraryId);
+  console.log("[Bunny] expires:", expires);
+  console.log("[Bunny] tokenAuthKey length:", tokenAuthKey.length);
+  console.log("[Bunny] token:", tokenA);
   console.log("[Bunny] embed URL:", url);
-  console.log(
-    "[Bunny] hashInput (first 20 chars):",
-    (tokenAuthKey + videoId + String(expires)).slice(0, 20) + "...",
-  );
+
   return url;
 }
 
