@@ -21,6 +21,10 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Check if user is admin — admins bypass enrollment
+  const profileResult = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  const isAdmin = (profileResult.data as { role: string } | null)?.role === "admin";
+
   // Fetch lesson to get course_id and bunny_video_id
   const { data: lesson } = await supabase
     .from("lessons")
@@ -34,8 +38,8 @@ export async function GET(request: Request) {
   if (!l.bunny_video_id)
     return NextResponse.json({ error: "Video not uploaded yet" }, { status: 404 });
 
-  // Preview lessons are free — skip enrollment check
-  if (!l.is_preview) {
+  // Admins and preview lessons skip enrollment check
+  if (!isAdmin && !l.is_preview) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: enrollment } = await (supabase.from("enrollments") as any)
       .select("status")
