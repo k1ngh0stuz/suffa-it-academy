@@ -53,6 +53,7 @@ export default async function LessonPage({ params }: Props) {
       {/* Video area */}
       <main className="flex-1">
         <VideoPlayer
+          bunnyVideoId={lessonTyped.bunny_video_id}
           playbackId={lessonTyped.mux_playback_id}
           courseId={lessonTyped.course_id}
           lessonId={lessonTyped.id}
