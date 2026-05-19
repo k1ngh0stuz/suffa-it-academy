@@ -159,7 +159,7 @@ export const translations = {
       btnAbout: "Biz haqimizda",
       statCourses: "Kurs",
       statStudents: "O'quvchi",
-      statAccess: "Kirish",
+      statAccess: "Kirish imkoniyati",
       statPayments: "To'lov usuli",
     },
     // About
