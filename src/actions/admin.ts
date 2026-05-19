@@ -137,6 +137,37 @@ export async function createCourseAction(
   }
 }
 
+export async function addModuleAction(_prev: unknown, formData: FormData): Promise<ActionResult> {
+  const title = (formData.get("title") as string)?.trim();
+  const courseId = formData.get("courseId") as string;
+
+  if (!title || !courseId) return { error: "Заполните все поля" };
+
+  try {
+    const { supabase } = await requireAdmin();
+
+    const { data: existing } = await supabase
+      .from("modules")
+      .select("sort_order")
+      .eq("course_id", courseId)
+      .order("sort_order", { ascending: false })
+      .limit(1);
+    const nextOrder = ((existing?.[0] as { sort_order: number } | undefined)?.sort_order ?? 0) + 1;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase.from("modules") as any).insert({
+      title,
+      course_id: courseId,
+      sort_order: nextOrder,
+    });
+    if (error) return { error: error.message };
+    revalidatePath("/admin");
+    return { success: `Модуль "${title}" создан` };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ошибка" };
+  }
+}
+
 export async function addLessonAction(_prev: unknown, formData: FormData): Promise<ActionResult> {
   const title = (formData.get("title") as string)?.trim();
   const moduleId = formData.get("moduleId") as string;
