@@ -37,6 +37,22 @@ export function VideoPlayer({
         const res = await fetch(`/api/bunny/token?lessonId=${encodeURIComponent(lessonId)}`);
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
+          // Check if video is still processing
+          const statusRes = await fetch(
+            `/api/bunny/status?videoId=${encodeURIComponent(bunnyVideoId)}`,
+          ).catch(() => null);
+          if (statusRes?.ok) {
+            const s = (await statusRes.json()) as {
+              ready: boolean;
+              label: string;
+              encodeProgress: number;
+            };
+            if (!s.ready) {
+              throw new Error(
+                `Видео обрабатывается на сервере: ${s.label}${s.encodeProgress > 0 ? ` (${s.encodeProgress}%)` : ""}. Попробуйте через минуту.`,
+              );
+            }
+          }
           throw new Error(`[${res.status}] ${body.error ?? "Ошибка доступа"}`);
         }
         const data = (await res.json()) as { url: string };
