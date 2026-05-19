@@ -129,10 +129,13 @@ export function VideoPlayer({
   // Bunny iframe embed
   if (bunnyVideoId) {
     return (
-      <div className="aspect-video w-full bg-black">
+      <div
+        className="relative w-full bg-black"
+        style={{ paddingTop: "min(56.25%, calc(100vh - 9rem))" }}
+      >
         <iframe
           src={embedUrl}
-          className="h-full w-full"
+          className="absolute inset-0 h-full w-full"
           title={title}
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
@@ -143,11 +146,14 @@ export function VideoPlayer({
 
   // Legacy Mux <video> element
   return (
-    <div className="aspect-video w-full bg-black">
+    <div
+      className="relative w-full bg-black"
+      style={{ paddingTop: "min(56.25%, calc(100vh - 9rem))" }}
+    >
       <video
         src={embedUrl}
         controls
-        className="h-full w-full"
+        className="absolute inset-0 h-full w-full"
         aria-label={title}
         playsInline
         controlsList="nodownload"
