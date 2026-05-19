@@ -126,38 +126,41 @@ export function VideoPlayer({
     );
   }
 
+  const containerStyle = {
+    paddingTop: "min(56.25%, calc(100vh - 9rem))",
+    maxWidth: "calc((100vh - 9rem) * 16 / 9)",
+  };
+
   // Bunny iframe embed
   if (bunnyVideoId) {
     return (
-      <div
-        className="relative w-full bg-black"
-        style={{ paddingTop: "min(56.25%, calc(100vh - 9rem))" }}
-      >
-        <iframe
-          src={embedUrl}
-          className="absolute inset-0 h-full w-full"
-          title={title}
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-        />
+      <div className="w-full bg-black">
+        <div className="relative mx-auto w-full" style={containerStyle}>
+          <iframe
+            src={embedUrl}
+            className="absolute inset-0 h-full w-full"
+            title={title}
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
       </div>
     );
   }
 
   // Legacy Mux <video> element
   return (
-    <div
-      className="relative w-full bg-black"
-      style={{ paddingTop: "min(56.25%, calc(100vh - 9rem))" }}
-    >
-      <video
-        src={embedUrl}
-        controls
-        className="absolute inset-0 h-full w-full"
-        aria-label={title}
-        playsInline
-        controlsList="nodownload"
-      />
+    <div className="w-full bg-black">
+      <div className="relative mx-auto w-full" style={containerStyle}>
+        <video
+          src={embedUrl}
+          controls
+          className="absolute inset-0 h-full w-full"
+          aria-label={title}
+          playsInline
+          controlsList="nodownload"
+        />
+      </div>
     </div>
   );
 }
