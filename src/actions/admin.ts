@@ -137,6 +137,42 @@ export async function createCourseAction(
   }
 }
 
+export async function addLessonAction(_prev: unknown, formData: FormData): Promise<ActionResult> {
+  const title = (formData.get("title") as string)?.trim();
+  const moduleId = formData.get("moduleId") as string;
+  const courseId = formData.get("courseId") as string;
+  const isPreview = formData.get("isPreview") === "true";
+
+  if (!title || !moduleId || !courseId) return { error: "Заполните все поля" };
+
+  try {
+    const { supabase } = await requireAdmin();
+
+    // Get next sort_order for this module
+    const { data: existing } = await supabase
+      .from("lessons")
+      .select("sort_order")
+      .eq("module_id", moduleId)
+      .order("sort_order", { ascending: false })
+      .limit(1);
+    const nextOrder = ((existing?.[0] as { sort_order: number } | undefined)?.sort_order ?? 0) + 1;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase.from("lessons") as any).insert({
+      title,
+      module_id: moduleId,
+      course_id: courseId,
+      is_preview: isPreview,
+      sort_order: nextOrder,
+    });
+    if (error) return { error: error.message };
+    revalidatePath("/admin");
+    return { success: `Урок "${title}" добавлен` };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ошибка" };
+  }
+}
+
 export async function searchStudentAction(
   _prev: unknown,
   formData: FormData,

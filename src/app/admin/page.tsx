@@ -6,7 +6,8 @@ import { AddCourseForm } from "@/components/admin/add-course-form";
 import { ManualGrantForm } from "@/components/admin/manual-grant-form";
 import { EnrollmentList } from "@/components/admin/enrollment-list";
 import { ManualGrantLog } from "@/components/admin/manual-grant-log";
-import type { Course, Enrollment, ManualGrant, Profile } from "@/types";
+import { LessonsManager } from "@/components/admin/lessons-manager";
+import type { Course, Enrollment, ManualGrant, Profile, ModuleWithLessons } from "@/types";
 
 export const metadata: Metadata = { title: "Администрирование" };
 
@@ -15,8 +16,13 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const supabase = getSupabaseServerClient();
 
-  const [coursesRes, enrollmentsRes, grantsRes, statsRes] = await Promise.all([
+  const [coursesRes, modulesRes, enrollmentsRes, grantsRes, statsRes] = await Promise.all([
     supabase.from("courses").select("*").order("sort_order"),
+    supabase
+      .from("modules")
+      .select("*, lessons(*)")
+      .order("sort_order")
+      .order("sort_order", { foreignTable: "lessons" }),
     supabase
       .from("enrollments")
       .select("*, profile:profiles(email, full_name), course:courses(title, slug)")
@@ -34,10 +40,17 @@ export default async function AdminPage() {
       .select("id", { count: "exact", head: true })
       .eq("status", "active"),
   ]);
-  const courses = coursesRes.data;
+  const courses = coursesRes.data as unknown as Course[];
+  const modules = (modulesRes.data ?? []) as unknown as ModuleWithLessons[];
   const enrollments = enrollmentsRes.data;
   const grants = grantsRes.data;
   const activeCount = statsRes.count;
+
+  // Attach modules to each course
+  const coursesWithModules = (courses ?? []).map((c) => ({
+    ...c,
+    modules: modules.filter((m) => m.course_id === c.id),
+  }));
 
   return (
     <div className="space-y-10">
@@ -55,11 +68,20 @@ export default async function AdminPage() {
         <AddCourseForm />
       </section>
 
+      {/* Video management */}
+      <section>
+        <h2 className="mb-1 text-lg font-semibold text-slate-100">Видеоуроки — Bunny Stream</h2>
+        <p className="mb-4 text-sm text-slate-500">
+          Разворачивайте курс, чтобы загрузить видео к каждому уроку или добавить новый урок.
+        </p>
+        <LessonsManager courses={coursesWithModules} />
+      </section>
+
       {/* Course status */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-slate-100">Курсы — статусы</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {(courses as unknown as Course[])?.map((course) => (
+          {(courses ?? []).map((course) => (
             <div key={course.id}>
               <CourseStatusToggle course={course} />
               <CoursePriceForm course={course} />
@@ -71,7 +93,7 @@ export default async function AdminPage() {
       {/* Manual grant */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-slate-100">Ручная выдача доступа</h2>
-        <ManualGrantForm courses={(courses as unknown as Course[]) ?? []} />
+        <ManualGrantForm courses={courses ?? []} />
       </section>
 
       {/* Enrollments */}

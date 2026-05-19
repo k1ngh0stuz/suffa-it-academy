@@ -44,6 +44,8 @@ export interface Lesson {
   description: string | null;
   mux_asset_id: string | null;
   mux_playback_id: string | null;
+  bunny_video_id: string | null;
+  bunny_library_id: string | null;
   duration_sec: number | null;
   sort_order: number;
   is_preview: boolean;
