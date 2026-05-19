@@ -35,7 +35,10 @@ export function VideoPlayer({
     try {
       if (bunnyVideoId) {
         const res = await fetch(`/api/bunny/token?lessonId=${encodeURIComponent(lessonId)}`);
-        if (!res.ok) throw new Error((await res.json()).error ?? "Ошибка доступа");
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(`[${res.status}] ${body.error ?? "Ошибка доступа"}`);
+        }
         const data = (await res.json()) as { url: string };
         setEmbedUrl(data.url);
       } else {
