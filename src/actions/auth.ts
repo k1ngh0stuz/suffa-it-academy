@@ -63,7 +63,7 @@ export async function resetPasswordAction(
   if (!email || !email.includes("@")) return { error: "Введите корректный email" };
 
   const supabase = getSupabaseServerClient();
-  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password/confirm`;
+  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/reset-password/confirm`;
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
 
   if (error) return { error: error.message };

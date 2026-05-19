@@ -53,7 +53,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect authenticated users away from auth pages
-  if (user && AUTH_PAGES.some((p) => pathname.startsWith(p))) {
+  // Exception: /reset-password/confirm — user must be authenticated to set new password
+  const isAuthPage = AUTH_PAGES.some((p) => pathname.startsWith(p));
+  const isConfirmPage = pathname.startsWith("/reset-password/confirm");
+  if (user && isAuthPage && !isConfirmPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
