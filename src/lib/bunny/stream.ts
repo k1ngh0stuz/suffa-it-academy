@@ -60,23 +60,23 @@ export function generateSignedEmbedUrl(videoId: string): string {
   }
 
   const expires = Math.floor(Date.now() / 1000) + 2 * 60 * 60; // 2 hours
+
+  // Bunny token: SHA256(key + videoId + expires), Base64Url encoded
+  // Must use raw bytes (Buffer.from) to match PHP's hash('sha256', ..., true)
+  const hashInput = Buffer.from(tokenAuthKey + videoId + String(expires), "utf8");
   const token = crypto
     .createHash("sha256")
-    .update(tokenAuthKey + videoId + expires)
+    .update(hashInput)
     .digest("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=/g, "");
 
   const url = `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?token=${token}&expires=${expires}&autoplay=false&preload=true`;
-  console.log("[Bunny] Generated embed URL:", url);
+  console.log("[Bunny] embed URL:", url);
   console.log(
-    "[Bunny] libraryId:",
-    libraryId,
-    "| videoId:",
-    videoId,
-    "| tokenAuthKey length:",
-    tokenAuthKey.length,
+    "[Bunny] hashInput (first 20 chars):",
+    (tokenAuthKey + videoId + String(expires)).slice(0, 20) + "...",
   );
   return url;
 }
