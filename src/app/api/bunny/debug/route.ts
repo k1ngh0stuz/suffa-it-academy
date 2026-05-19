@@ -46,33 +46,34 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: `Bunny API ${libRes.status}` }, { status: 502 });
   }
 
-  const lib = (await libRes.json()) as {
-    TokenAuthenticationKey?: string;
-    ApiKey?: string;
-    VideoLibraryId?: number;
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lib = (await libRes.json()) as Record<string, any>;
 
-  const keyFromApi = lib.TokenAuthenticationKey ?? "";
+  // Return all field names from the API response so we can find the correct key field
+  const fieldNames = Object.keys(lib);
+  // Find any field that looks like a token/auth/security key (non-empty string, length > 10)
+  const keyLikeFields: Record<string, { length: number; preview: string }> = {};
+  for (const [k, v] of Object.entries(lib)) {
+    if (typeof v === "string" && v.length > 10) {
+      keyLikeFields[k] = {
+        length: v.length,
+        preview: v.slice(0, 4) + "…" + v.slice(-4),
+      };
+    }
+  }
+
   const keyFromEnv = TOKEN_AUTH_KEY_ENV();
   const expires = Math.floor(Date.now() / 1000) + 7200;
-
-  const tokenFromApi = makeToken(keyFromApi, videoId, expires);
   const tokenFromEnv = makeToken(keyFromEnv, videoId, expires);
 
-  const keysMatch = keyFromApi === keyFromEnv;
-
   return NextResponse.json({
-    keysMatch,
-    keyFromApiLength: keyFromApi.length,
+    fieldNames,
+    keyLikeFields,
     keyFromEnvLength: keyFromEnv.length,
-    // Show first+last 4 chars to verify without exposing full key
-    keyFromApiPreview: keyFromApi.slice(0, 4) + "…" + keyFromApi.slice(-4),
     keyFromEnvPreview: keyFromEnv.slice(0, 4) + "…" + keyFromEnv.slice(-4),
     expires,
     videoId,
-    tokenFromApi,
     tokenFromEnv,
-    embedUrlFromApi: `${BUNNY_EMBED_HOST}/embed/${LIBRARY_ID()}/${videoId}?token=${tokenFromApi}&expires=${expires}`,
     embedUrlFromEnv: `${BUNNY_EMBED_HOST}/embed/${LIBRARY_ID()}/${videoId}?token=${tokenFromEnv}&expires=${expires}`,
   });
 }
