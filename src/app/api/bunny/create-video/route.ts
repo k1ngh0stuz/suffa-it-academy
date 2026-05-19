@@ -27,6 +27,14 @@ export async function POST(request: Request) {
   if (!body.title || !body.lessonId)
     return NextResponse.json({ error: "title and lessonId required" }, { status: 400 });
 
+  // Check env vars are configured
+  if (!process.env.BUNNY_STREAM_API_KEY || !process.env.BUNNY_STREAM_LIBRARY_ID) {
+    return NextResponse.json(
+      { error: "BUNNY_STREAM_API_KEY или BUNNY_STREAM_LIBRARY_ID не заданы в .env.local / Vercel" },
+      { status: 500 },
+    );
+  }
+
   // Create video in Bunny
   let videoId: string;
   try {
