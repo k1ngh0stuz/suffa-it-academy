@@ -17,10 +17,7 @@ function makeToken(key: string, videoId: string, expires: number): string {
   return crypto
     .createHash("sha256")
     .update(key + videoId + String(expires))
-    .digest("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+    .digest("hex");
 }
 
 export async function GET(request: Request) {
