@@ -45,7 +45,10 @@ export async function registerAction(_prev: unknown, formData: FormData): Promis
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { data: { full_name: parsed.data.full_name } },
+    options: {
+      data: { full_name: parsed.data.full_name },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+    },
   });
 
   if (error) return { error: error.message };
