@@ -53,7 +53,9 @@ export function generateSignedEmbedUrl(videoId: string): string {
   const tokenAuthKey = TOKEN_AUTH_KEY();
 
   if (!tokenAuthKey) {
-    // Token auth not configured — return open embed (dev/staging)
+    console.warn(
+      "[Bunny] BUNNY_TOKEN_AUTH_KEY not set — returning unsigned URL (will 403 if Token Auth is enabled in library)",
+    );
     return `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?autoplay=false&preload=true`;
   }
 
@@ -66,7 +68,17 @@ export function generateSignedEmbedUrl(videoId: string): string {
     .replace(/\//g, "_")
     .replace(/=/g, "");
 
-  return `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?token=${token}&expires=${expires}&autoplay=false&preload=true`;
+  const url = `${BUNNY_EMBED_HOST}/embed/${libraryId}/${videoId}?token=${token}&expires=${expires}&autoplay=false&preload=true`;
+  console.log("[Bunny] Generated embed URL:", url);
+  console.log(
+    "[Bunny] libraryId:",
+    libraryId,
+    "| videoId:",
+    videoId,
+    "| tokenAuthKey length:",
+    tokenAuthKey.length,
+  );
+  return url;
 }
 
 // ── Get video status from Bunny (for admin panel) ──────────────────────────
